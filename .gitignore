@@ -1,0 +1,7 @@
+build/*
+dist/*
+nbproject/private/*
+/AgendaServerRest/build/
+/AgendaClienteRest/build/
+/AgendaServerRest/dist/
+/AgendaClienteRest/dist/
