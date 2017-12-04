@@ -23,7 +23,7 @@ import javax.ws.rs.client.WebTarget;
  * @author Emilio
  */
 public class ClienteEventos {
-    
+
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:8080/AgendaServerRest/webresources";
@@ -135,15 +135,15 @@ public class ClienteEventos {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public <T> T EventosDeUsuario_XML(Class<T> responseType, String usuario) throws ClientErrorException {
+    public <T> T EventosDeUsuario_XML(Class<T> responseType, String email) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findEventsByUsuario/{0}", new Object[]{usuario}));
+        resource = resource.path(java.text.MessageFormat.format("findEventsByUsuario/{0}", new Object[]{email}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T EventosDeUsuario_JSON(Class<T> responseType, String usuario) throws ClientErrorException {
+    public <T> T EventosDeUsuario_JSON(Class<T> responseType, String email) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findEventsByUsuario/{0}", new Object[]{usuario}));
+        resource = resource.path(java.text.MessageFormat.format("findEventsByUsuario/{0}", new Object[]{email}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 

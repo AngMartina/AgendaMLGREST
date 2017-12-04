@@ -7,11 +7,13 @@
         <title>Lista de eventos</title>
     </h:head>
     <h:body>
-        Lista de eventos
         <h:form>    
         <h:commandButton id="Salir" value="Salir" action="#{agendaRestManagedBean.salir()}" />
         </h:form>
-             
+        <br/>
+        <h:form>    
+            <h:commandButton id="VerPerfil" value="Ver Perfil" action="#{agendaRestManagedBean.verPerfil()}" rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}"/>
+        </h:form>   
         <f:view>
             <h:form id="listaEventos">
                 <h1><h:outputText value="List"/></h1>
@@ -85,6 +87,10 @@
                             <h:outputText value="Emailusuario"/>
                         </f:facet>
                         <h:outputText value="#{item.emailusuario.email.toString()}"/>
+                    </h:column>
+                    <h:column>
+                        
+                        <h:commandButton id="VerEvento" value="VerEvento" action="#{agendaRestManagedBean.verEvento(item)}" />
                     </h:column>
                     <h:column>
                         

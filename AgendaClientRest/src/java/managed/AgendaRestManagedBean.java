@@ -235,6 +235,7 @@ public class AgendaRestManagedBean implements Serializable {
     }
     
     public String volver(){
+        eventoSeleccionado = null;
         return "listaEventos";
     }
     
@@ -283,6 +284,30 @@ public class AgendaRestManagedBean implements Serializable {
          this.eliminarEvento(evento);
         
          return "null";
+    }
+    
+    public String verPerfil(){
+        return "verPerfil";
+    }
+    
+    public List<Evento> obtenerEventosUsuario(Usuarios usuario){
+        
+        ClienteEventos clienteEventos = new ClienteEventos();
+        
+        Response r = clienteEventos.EventosDeUsuario_XML(Response.class, usuario.getId().toString());
+        if(r.getStatus() == 200){
+            GenericType<List<Evento>> genericType = new GenericType<List<Evento>>(){};
+                List<Evento> todosEventos= r.readEntity(genericType);  
+                return todosEventos;
+        }
+        
+        return null;
+    }
+    
+    public String verEvento(Evento evento){
+        eventoSeleccionado = evento;
+        
+        return "verEvento";
     }
 
     
