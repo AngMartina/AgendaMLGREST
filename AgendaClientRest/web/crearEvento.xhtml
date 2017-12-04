@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Crear Evento</title>
+    </h:head>
+    <h:body>
+        <f:view>
+            <h:form>
+                <h1><h:outputText value="Crear Evento"/></h1>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Fechainicio:" for="fechainicio" />
+                    <h:inputText id="fechainicio" value="#{agendaRestManagedBean.eventoSeleccionado.fechainicio}" title="Fechainicio" required="true" requiredMessage="Introduzca fecha de inicio">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                        
+                    </h:inputText>
+                    
+                    
+                    <h:outputLabel value="Fechafin:" for="fechafin" />
+                    <h:inputText id="fechafin" value="#{agendaRestManagedBean.eventoSeleccionado.fechafin}" title="Fechafin" required="true" requiredMessage="Introduzca fecha de fin">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                        
+                    </h:inputText>
+                    
+                    <h:outputLabel value="Descripcion:" for="descripcion" />
+                    <h:inputText id="descripcion" value="#{agendaRestManagedBean.eventoSeleccionado.descripcion}" title="Descripcion" required="true" requiredMessage="Introduzca una descripción"/>
+                    
+                    <h:outputLabel value="Localizacion:" for="localizacion" />
+                    <h:inputText id="localizacion" value="#{agendaRestManagedBean.eventoSeleccionado.localizacion}" title="Localizacion" required="true" requiredMessage="Introduzca localizacion"/>
+                    
+                    <h:outputLabel value="Código Postal" for="códigopostal" />
+                    <h:inputText id="codigopostal" value="#{agendaRestManagedBean.eventoSeleccionado.codigopostal}" title="Código Postal"/>
+                    
+                    <h:outputLabel value="Precio:" for="precio" />
+                    <h:inputText id="precio" value="#{agendaRestManagedBean.eventoSeleccionado.precio}" title="Precio" required="true" requiredMessage="The Precio field is required."/>
+                    
+                    <h:outputLabel value="Url:" for="url" />
+                    <h:inputText id="url" value="#{agendaRestManagedBean.eventoSeleccionado.url}" title="Url" />
+                    
+                    <h:outputLabel value="Palabras clave:" for="palabrasclave"/>
+                    <h:selectManyCheckbox value="#{agendaRestManagedBean.palabrasClave}">
+                        <f:selectItem itemLabel="Cine" itemValue="CINE"/>
+                        <f:selectItem itemLabel="Baile" itemValue="BAILE"/>
+                        <f:selectItem itemLabel="Teatro" itemValue="TEATRO"/>
+                        <f:selectItem itemLabel="Comida" itemValue="COMIDA"/>
+                        <f:selectItem itemLabel="Belleza" itemValue="BELLEZA"/>
+                        <f:selectItem itemLabel="Música" itemValue="MUSICA"/>
+                        <f:selectItem itemLabel="Deporte" itemValue="DEPORTE"/>
+                        <f:selectItem itemLabel="Moda" itemValue="MODA"/>
+                    </h:selectManyCheckbox>
+                
+                    
+                </h:panelGrid>
+                <h:outputText value="#{agendaRestManagedBean.mensajeError}"/>
+                <h:commandButton action="#{agendaRestManagedBean.subirEvento()}" value="Crear"/>
+                
+            </h:form>
+            <h:form>
+                <h:commandButton action="#{agendaRestManagedBean.listarEventos()}" value="Volver"/>
+            </h:form>
+        </f:view>
+
+    </h:body>
+</html>
