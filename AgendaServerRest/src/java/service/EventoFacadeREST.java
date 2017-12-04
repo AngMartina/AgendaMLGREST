@@ -6,7 +6,6 @@
 package service;
 
 import entity.Evento;
-import entity.Usuarios;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -31,7 +30,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
- * @author Angela
+ * @author Emilio
  */
 @Stateless
 @Path("entity.evento")
@@ -120,13 +119,13 @@ public class EventoFacadeREST extends AbstractFacade<Evento> {
     }
     
     @GET
-    @Path("findEventsByUsuario/{usuario}")
+    @Path("findEventsByUsuario/{email}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Evento> EventosDeUsuario(Usuarios u){
+    public List<Evento> EventosDeUsuario(Integer id){
         Query q;
-        
-        q = em.createQuery("SELECT e FROM Evento e WHERE :email=e.emailusuario");
-        q.setParameter("email", u);
+        String r = id.toString();
+        q = em.createQuery("SELECT e FROM Evento e WHERE :id=e.emailusuario.id");
+        q.setParameter("id", r);
         
         return q.getResultList();
     }
@@ -185,5 +184,4 @@ public class EventoFacadeREST extends AbstractFacade<Evento> {
         q.setParameter("estado", 1);
         q.setParameter("id", evento.getId()).executeUpdate();
     }
-    
 }

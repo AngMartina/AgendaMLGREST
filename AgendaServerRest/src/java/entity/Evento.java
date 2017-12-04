@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Angela
+ * @author Emilio
  */
 @Entity
 @Table(name = "EVENTO")
@@ -38,6 +38,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Evento.findByFechafin", query = "SELECT e FROM Evento e WHERE e.fechafin = :fechafin")
     , @NamedQuery(name = "Evento.findByDescripcion", query = "SELECT e FROM Evento e WHERE e.descripcion = :descripcion")
     , @NamedQuery(name = "Evento.findByLocalizacion", query = "SELECT e FROM Evento e WHERE e.localizacion = :localizacion")
+    , @NamedQuery(name = "Evento.findByLatitud", query = "SELECT e FROM Evento e WHERE e.latitud = :latitud")
+    , @NamedQuery(name = "Evento.findByLongitud", query = "SELECT e FROM Evento e WHERE e.longitud = :longitud")
+    , @NamedQuery(name = "Evento.findByProvincia", query = "SELECT e FROM Evento e WHERE e.provincia = :provincia")
     , @NamedQuery(name = "Evento.findByCodigopostal", query = "SELECT e FROM Evento e WHERE e.codigopostal = :codigopostal")
     , @NamedQuery(name = "Evento.findByPrecio", query = "SELECT e FROM Evento e WHERE e.precio = :precio")
     , @NamedQuery(name = "Evento.findByUrl", query = "SELECT e FROM Evento e WHERE e.url = :url")
@@ -65,6 +68,14 @@ public class Evento implements Serializable {
     @Size(max = 50)
     @Column(name = "LOCALIZACION")
     private String localizacion;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "LATITUD")
+    private Double latitud;
+    @Column(name = "LONGITUD")
+    private Double longitud;
+    @Size(max = 50)
+    @Column(name = "PROVINCIA")
+    private String provincia;
     @Basic(optional = false)
     @NotNull
     @Column(name = "CODIGOPOSTAL")
@@ -140,6 +151,30 @@ public class Evento implements Serializable {
 
     public void setLocalizacion(String localizacion) {
         this.localizacion = localizacion;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
     }
 
     public int getCodigopostal() {

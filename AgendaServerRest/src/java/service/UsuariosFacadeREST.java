@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Angela
+ * @author Emilio
  */
 @Stateless
 @Path("entity.usuarios")
@@ -64,7 +64,7 @@ public class UsuariosFacadeREST extends AbstractFacade<Usuarios> {
     }
 
     @GET
-    @Override
+    @Path("findAllUsers")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Usuarios> findAll() {
         return super.findAll();

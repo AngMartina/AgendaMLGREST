@@ -10,5 +10,5 @@
         <property name="URL" value="jdbc:derby://localhost:1527/agendaREST"/>
         <property name="driverClass" value="org.apache.derby.jdbc.ClientDriver"/>
     </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="java:app/jdbc/agendaRest" object-type="user" pool-name="derby_net_agendaREST_agendaRESTPool"/>
+    <jdbc-resource enabled="true" jndi-name="java:app/agendaRest" object-type="user" pool-name="derby_net_agendaREST_agendaRESTPool"/>
 </resources>
