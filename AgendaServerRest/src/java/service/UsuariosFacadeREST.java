@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -87,5 +88,20 @@ public class UsuariosFacadeREST extends AbstractFacade<Usuarios> {
     protected EntityManager getEntityManager() {
         return em;
     }
+    
+    @GET
+    @Path("/findByEmail/{email}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Usuarios findByEmail(@PathParam("email") String email) {
+        try{
+        Query q;
+        
+        q = em.createQuery("SELECT u FROM Usuarios u WHERE :email = u.email");
+        q.setParameter("email", email);
+
+        return (Usuarios)q.getSingleResult();
+        }catch(NullPointerException e){
+        return null;
+    }}
     
 }

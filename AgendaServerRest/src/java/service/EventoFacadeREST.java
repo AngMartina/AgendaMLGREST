@@ -6,10 +6,16 @@
 package service;
 
 import entity.Evento;
+import entity.Usuarios;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,6 +25,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
@@ -63,7 +72,7 @@ public class EventoFacadeREST extends AbstractFacade<Evento> {
     }
 
     @GET
-    @Override
+    @Path("findAllEvents")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Evento> findAll() {
         return super.findAll();
@@ -86,6 +95,95 @@ public class EventoFacadeREST extends AbstractFacade<Evento> {
     @Override
     protected EntityManager getEntityManager() {
         return em;
+    }
+    @GET
+    @Path("findEventsBy/{date}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Evento> buscarEventoPorFecha(Date fecha){
+        Query q;
+        
+        q = em.createQuery("SELECT e FROM Evento e WHERE :fecha BETWEEN e.fechainicio AND e.fechafin ORDER BY e.fechafin");
+        q.setParameter("fecha", fecha);
+        return q.getResultList();
+        
+    }
+    @GET
+    @Path("findEventsBy/{CP}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+     public List<Evento> buscarEventoPorCP(Integer cp){
+        Query q;
+        
+        q = em.createQuery("SELECT e FROM Evento e WHERE :cp = e.codigopostal");
+        q.setParameter("cp", cp);
+        return q.getResultList();
+        
+    }
+    
+    @GET
+    @Path("findEventsByUsuario/{usuario}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Evento> EventosDeUsuario(Usuarios u){
+        Query q;
+        
+        q = em.createQuery("SELECT e FROM Evento e WHERE :email=e.emailusuario");
+        q.setParameter("email", u);
+        
+        return q.getResultList();
+    }
+    
+    @GET
+    @Path("findEventsByDate")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Evento> EventosNoCaducados() throws DatatypeConfigurationException{
+        
+        Date fechaActual = new Date(); 
+        Query q;
+        
+        //Si falla puede ser que tengamos que formatear la fecha actual para que sea igual.
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(fechaActual);
+        
+        XMLGregorianCalendar fechaGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+        
+        
+        q = em.createQuery("SELECT e FROM Evento e Where e.fechafin >= :fechaActual");
+        q.setParameter("fechaActual", fechaActual);
+        
+        return q.getResultList();
+    
+    }
+     
+    @GET
+    @Path("findEventsNoVisibled")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+       public List<Evento> eventosVisibles(){
+        Query q;
+        LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "UTC+01:00" ) );
+        java.sql.Date today = java.sql.Date.valueOf(todayLocalDate);
+        
+        q = em.createQuery("SELECT e FROM Evento e WHERE e.fechafin >= :today AND e.estado = 1");
+        q.setParameter("today", today);
+        return q.getResultList();
+        
+    }
+    @GET
+    @Path("findEventsNoValidate")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Evento> EventosSinValidar(){
+        Query q;
+        q = em.createQuery("SELECT e FROM Evento e WHERE e.estado= :estado");
+        q.setParameter("estado", 0);
+        
+        return q.getResultList();
+    }
+    @GET
+    @Path("validate/{event}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void ValidarEvento(Evento evento){
+        Query q;
+        q = em.createQuery("UPDATE Evento SET estado = :estado WHERE id = :id");
+        q.setParameter("estado", 1);
+        q.setParameter("id", evento.getId()).executeUpdate();
     }
     
 }
