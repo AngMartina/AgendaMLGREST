@@ -7,14 +7,35 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Inicio Sesion Prueba</title>
+        <script src="https://apis.google.com/js/api.js"></script>
     </h:head>
     <body>
-        
-        
+        <script type="text/javascript">
+            gapi.load('auth2');
+            function updateSigninStatus(isSignedIn) {
+                // When signin status changes, this function is called.
+                // If the signin status is changed to signedIn, we make an API call.
+                if (isSignedIn) {
+                    alert('Conectado correctamente');
+                    makeApiCall();
+                }
+            }
+            function initClient() {
+                var auth2 = gapi.auth2.init({
+                    client_id: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
+                    scope: 'profile'
+                });
+                auth2.signIn();
+                // Listen for sign-in state changes.
+                auth2.isSignedIn.listen(updateSigninStatus);
+                window.location = "/listaEventos.xhtml";
+            }
+        </script>
         <h:form>
+            <h:button id="google" value="Conectar google" onclick="initClient()"/>
         <h:commandButton id="invitado" value="Iniciar invitado" action="#{agendaRestManagedBean.seleccionUsuario(0)}" />
         <h:commandButton id="usuario" value="Iniciar usuario" action="#{agendaRestManagedBean.seleccionUsuario(1)}" />
         <h:commandButton id="superusuario" value="Iniciar superusuario" action="#{agendaRestManagedBean.seleccionUsuario(2)}" />
