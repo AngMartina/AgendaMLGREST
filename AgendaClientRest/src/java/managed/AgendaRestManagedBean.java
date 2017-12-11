@@ -12,9 +12,11 @@ import entity.Usuarios;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.GenericType;
@@ -31,10 +33,16 @@ public class AgendaRestManagedBean implements Serializable {
     private Usuarios usuarioSeleccionado;
     private Evento eventoSeleccionado;
   
+    private List<Evento> listaEventos;
+    
     private List<String> palabrasClave;
+    private List<String> preferencias;
     private String mensajeError;
     private int ordenacion;
+    private int busqueda;
     private boolean modificar;
+    private Date fechaOrdenacion;
+    private int distanciaKm;
     
     
     
@@ -79,6 +87,46 @@ public class AgendaRestManagedBean implements Serializable {
 
     public void setOrdenacion(int ordenacion) {
         this.ordenacion = ordenacion;
+    }
+
+    public List<String> getPreferencias() {
+        return preferencias;
+    }
+
+    public void setPreferencias(List<String> preferencias) {
+        this.preferencias = preferencias;
+    }
+
+    public List<Evento> getListaEventos() {
+        return listaEventos;
+    }
+
+    public void setListaEventos(List<Evento> listaEventos) {
+        this.listaEventos = listaEventos;
+    }
+
+    public int getBusquedad() {
+        return busqueda;
+    }
+
+    public void setBusquedad(int busquedad) {
+        this.busqueda = busquedad;
+    }
+
+    public Date getFechaOrdenacion() {
+        return fechaOrdenacion;
+    }
+
+    public void setFechaOrdenacion(Date fechaOrdenacion) {
+        this.fechaOrdenacion = fechaOrdenacion;
+    }
+
+    public int getDistanciaKm() {
+        return distanciaKm;
+    }
+
+    public void setDistanciaKm(int distanciaKm) {
+        this.distanciaKm = distanciaKm;
     }
     
     
@@ -140,13 +188,19 @@ public class AgendaRestManagedBean implements Serializable {
                 GenericType<Usuarios> genericType = new GenericType<Usuarios>(){};
                 usuarioSeleccionado = r.readEntity(genericType);
             }
-        
+            
+        listaEventos = listarEventos();
+        this.ordenacion = 2;
+        this.ordenar();
+        this.ordenacion = 0;
         return "listaEventos";
     }
     
     public String salir(){
         
-        usuarioSeleccionado = null;
+        this.usuarioSeleccionado = null;
+        this.ordenacion = 0;
+        
         return "index";
     }
     
@@ -236,6 +290,8 @@ public class AgendaRestManagedBean implements Serializable {
     
     public String volver(){
         eventoSeleccionado = null;
+        palabrasClave = null;
+        preferencias = null;
         return "listaEventos";
     }
     
@@ -309,6 +365,147 @@ public class AgendaRestManagedBean implements Serializable {
         
         return "verEvento";
     }
+    
+    public String editarPerfil(){
+        
+        String[] preferenciasUsuario = usuarioSeleccionado.getPreferencias().split(";");
+        preferencias = Arrays.asList(preferenciasUsuario);
+        
+        return "editarPerfil";
+    }
+    
+    public String actualizarUsuario(){
+       
+        ClienteUsuarios clienteUsuario = new ClienteUsuarios();
+           
+        String preferenciasCadena ="";
+
+        for(String cadena: preferencias){
+            preferenciasCadena += cadena;
+            preferenciasCadena +=";";
+        }
+
+        usuarioSeleccionado.setPreferencias(preferenciasCadena);
+        
+        clienteUsuario.edit_XML(usuarioSeleccionado, usuarioSeleccionado.getId().toString());
+        
+        return "null";
+    }
+    
+    public String borrarUsuario(){
+        
+        ClienteUsuarios clienteUsuarios = new ClienteUsuarios();
+        clienteUsuarios.remove(usuarioSeleccionado.getId().toString());
+        
+        usuarioSeleccionado = null;
+        
+        return "index";
+    }
+     public void ordenar(){
+        
+        if(this.ordenacion == 1){
+            Collections.sort(this.listaEventos, new Comparator<Evento>() {
+            @Override
+            public int compare(Evento o1, Evento o2) {
+                return Double.compare(o1.getPrecio(), o2.getPrecio());
+            }
+            });
+            
+        } else if(this.ordenacion == 2){
+            Collections.sort(this.listaEventos, new Comparator<Evento>() {
+            @Override
+            public int compare(Evento o1, Evento o2) {
+                return o1.getFechainicio().compareTo(o2.getFechainicio());
+            }
+            });
+        } else if(this.ordenacion == 3){
+            Collections.sort(this.listaEventos, new Comparator<Evento>() {
+            @Override
+            public int compare(Evento o1, Evento o2) {
+                return o1.getLocalizacion().compareTo(o2.getLocalizacion());
+            }
+            });
+        } else if(this.ordenacion == 4){
+            
+             listaEventos = listarEventos();
+        }
+        
+        
+        
+    }
+    
+      public void buscarPor(){
+        ClienteEventos clienteEvento = new ClienteEventos();
+        List<Evento> listaResultante = new ArrayList<>();
+        if(0!=this.busqueda)
+            switch (this.busqueda) {
+           
+            case 1: //Por fecha
+                if(fechaOrdenacion!=null){
+                    Response r = clienteEvento.buscarEventoPorFecha_XML(Response.class, fechaOrdenacion.toString());
+                    if(r.getStatus() == 200){
+                        GenericType<List<Evento>> genericType = new GenericType<List<Evento>>(){};
+                            listaResultante = r.readEntity(genericType);
+                    }
+                    
+                    for(Evento evento: listaResultante){
+                        if(this.usuarioSeleccionado.getTipoUsuario() != 3){
+                            if(evento.getEstado() != 0){
+                                listaEventos.add(evento);
+                            }
+                        }else{
+                            listaEventos.add(evento);
+                        }
+                    }
+                    busqueda = 0;
+                }
+                   
+                break;
+            case 2: //Por codigoPostal
+                //ANGELA TRABAJARÁ AQUI
+                break;
+                
+           
+            case 3:
+                 List<Evento> listaPreferencias = listaEventosPreferencia(usuarioSeleccionado);
+                listaEventos = listaPreferencias;
+                listaPreferencias.forEach((e) -> {
+                    if(this.usuarioSeleccionado.getTipoUsuario()!=3){
+                        if(e.getEstado()!=0){
+                            listaEventos.add(e);
+                        }
+                    }else{
+                        listaEventos.add(e);
+                    } }
+                );
+                busqueda = 0;
+                
+                break;
+           
+        }
+    } 
+    public List<Evento> listaEventosPreferencia(Usuarios usuario){
+        List<Evento> listaEventosAux = new ArrayList<>();
+        boolean eventoAñadido;
+        String[] preferencias = usuario.getPreferencias().split(";");
+        
+        for(Evento evento: listaEventosAux){
+            String[] palabrasClave = evento.getPalabrasclave().split(";");
+            eventoAñadido = false;
+            
+            for(int i = 0; i < preferencias.length-1 && !eventoAñadido; i++){
+                for(int j = 0; j < palabrasClave.length-1 && !eventoAñadido; j++){
+                    if(palabrasClave[j].equals(preferencias[i])){
+                        listaEventos.add(evento);
+                        eventoAñadido = true;
+                    }
+                }
+            }
+        }
+        
+        return listaEventos;
+    }
+    
 
     
     

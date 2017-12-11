@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>Editar Perfil</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <f:view>
+
+
+            <h:form>
+                <h1><h:outputText value="Editar Perfil"/></h1>
+                <h:panelGrid columns="2">
+                    
+                    <h:outputLabel value="Nombre:" for="nombre" />
+                    <h:inputText id="nombre" value="#{agendaRestManagedBean.usuarioSeleccionado.nombre}" title="Nombre" required="true" requiredMessage="The Nombre field is required."/>
+                    <h:outputLabel value="Apellidos:" for="apellidos" />
+                    <h:inputText id="apellidos" value="#{agendaRestManagedBean.usuarioSeleccionado.apellidos}" title="Apellidos" required="true" requiredMessage="The Apellidos field is required."/>
+                    <h:outputLabel value="Email:" for="email" />
+                    <h:inputText id="email" value="#{agendaRestManagedBean.usuarioSeleccionado.email}" title="Email" required="true" requiredMessage="The Email field is required."/>
+                    <h:outputLabel value="Contrasenna:" for="contrasenna" />
+                    <h:inputText id="contrasenna" value="#{agendaRestManagedBean.usuarioSeleccionado.contrasenna}" title="Contrasenna" required="true" requiredMessage="The Contrasenna field is required."/>
+                    <h:outputLabel value="Palabras clave:" for="palabrasclave"/>
+                    <h:selectManyCheckbox value="#{agendaRestManagedBean.preferencias}">
+                        <f:selectItem itemLabel="Cine" itemValue="CINE"/>
+                        <f:selectItem itemLabel="Baile" itemValue="BAILE"/>
+                        <f:selectItem itemLabel="Teatro" itemValue="TEATRO"/>
+                        <f:selectItem itemLabel="Comida" itemValue="COMIDA"/>
+                        <f:selectItem itemLabel="Belleza" itemValue="BELLEZA"/>
+                        <f:selectItem itemLabel="Música" itemValue="MUSICA"/>
+                        <f:selectItem itemLabel="Deporte" itemValue="DEPORTE"/>
+                        <f:selectItem itemLabel="Moda" itemValue="MODA"/>
+                    </h:selectManyCheckbox>
+                </h:panelGrid>
+                    <h:commandButton id="GuardarCambios" value="GuardarCambios" action="#{agendaRestManagedBean.actualizarUsuario()}"/>
+                    <h:commandButton id="Volver" value="Volver" action="#{agendaRestManagedBean.volver()}"/> 
+                    <br/>
+                    <h:commandButton id="BorrarPerfil" value="BORRAR PERFIL" action="#{agendaRestManagedBean.borrarUsuario()}"/> 
+            </h:form>
+        </f:view>
+        
+    </body>
+</html>
