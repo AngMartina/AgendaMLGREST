@@ -6,40 +6,60 @@ and open the template in the editor.
 -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <title>Inicio Sesion Prueba</title>
-        <script src="https://apis.google.com/js/api.js"></script>
-    </h:head>
-    <body>
-        <script type="text/javascript">
-            gapi.load('auth2');
-            function updateSigninStatus(isSignedIn) {
-                // When signin status changes, this function is called.
-                // If the signin status is changed to signedIn, we make an API call.
-                if (isSignedIn) {
-                    alert('Conectado correctamente');
-                    makeApiCall();
-                }
-            }
-            function initClient() {
-                var auth2 = gapi.auth2.init({
-                    client_id: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
-                    scope: 'profile'
-                });
-                auth2.signIn();
-                // Listen for sign-in state changes.
-                auth2.isSignedIn.listen(updateSigninStatus);
-                window.location = "/listaEventos.xhtml";
-            }
-        </script>
-        <h:form>
-            <h:button id="google" value="Conectar google" onclick="initClient()"/>
-        <h:commandButton id="invitado" value="Iniciar invitado" action="#{agendaRestManagedBean.seleccionUsuario(0)}" />
-        <h:commandButton id="usuario" value="Iniciar usuario" action="#{agendaRestManagedBean.seleccionUsuario(1)}" />
-        <h:commandButton id="superusuario" value="Iniciar superusuario" action="#{agendaRestManagedBean.seleccionUsuario(2)}" />
-        <h:commandButton id="periodista" value="Iniciar periodista" action="#{agendaRestManagedBean.seleccionUsuario(3)}" />
-        </h:form>
-    </body>
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+  <h:head></h:head>
+  <h:body>
+    <script type="text/javascript">
+      function handleClientLoad() {
+        gapi.load('client:auth2', initClient);
+      }
+
+      function initClient() {
+        gapi.client.init({
+            apiKey: 'AIzaSyDLCymEwbiWgB67Ly9fvBECL8W8sw5ode8',
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/plus/v1/rest'],
+            clientId: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
+            scope: 'email https://www.googleapis.com/auth/plus.me'
+        }).then(function () {
+          gapi.auth2.getAuthInstance().signIn();
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        });
+      }
+
+      function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+          makeApiCall();
+        }else{
+        }
+      }
+
+      function handleSignInClick(event) {
+        gapi.auth2.getAuthInstance().signIn();
+      }
+
+      function handleSignOutClick(event) {
+        gapi.auth2.getAuthInstance().signOut();
+      }
+
+      function makeApiCall() {
+        var request = gapi.client.plus.people.get({ 
+            'userId' : 'me'
+        });
+        request.execute(function(resp) {
+        var primaryEmail;
+        primaryEmail = resp.emails[0].value;
+        console.log('ID: ' + resp.id);
+        console.log('Display Name: ' + resp.displayName);
+        console.log('Email: ' + primaryEmail);
+        console.log('JSON Profile: ' + JSON.stringify(resp));
+        });  
+      }
+    </script>
+    <script src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <h:button id="signin-button" onclick="handleSignInClick()">Sign In</h:button>
+    <h:button id="signout-button" onclick="handleSignOutClick()">Sign Out</h:button>
+  </h:body>
 </html>
