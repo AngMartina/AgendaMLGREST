@@ -12,6 +12,7 @@
         </h:form>
         <br/>
         <h:form>    
+            <h:inputText id="hi" value="#{agendaRestManagedBean.email}" ></h:inputText>
             <h:commandButton id="VerPerfil" value="Ver Perfil" action="#{agendaRestManagedBean.verPerfil()}" rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}"/>
         </h:form>   
         <f:view>
@@ -110,7 +111,30 @@
                 
             </h:form>
         </f:view>
+      <script type="text/javascript">
+      function handleClientLoad() {
+        gapi.load('client:auth2', initClient);
+      }
 
+      function initClient() {
+        gapi.client.init({
+            apiKey: 'AIzaSyDLCymEwbiWgB67Ly9fvBECL8W8sw5ode8',
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/plus/v1/rest'],
+            clientId: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
+            scope: 'email https://www.googleapis.com/auth/plus.me'
+        }).then(function () {
+        });
+      }
+
+      function handleSignOutClick(event) {
+          gapi.auth2.getAuthInstance().disconnect();
+        gapi.auth2.getAuthInstance().signOut();
+      }
+    </script>
+            <script src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
     </h:body>
 </html>
 
