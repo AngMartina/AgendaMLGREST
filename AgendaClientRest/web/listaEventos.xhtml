@@ -5,6 +5,19 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Lista de eventos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"></meta>
+        <style>
+           #map {
+                  height: 300px;
+                  width: 80%;
+                }
+        </style>
+        <script>
+            var latEvents=new Array();
+            var longEvents=new Array();
+        </script>
+       
     </h:head>
     <h:body>
         <h:form>    
@@ -52,6 +65,8 @@
                     <f:ajax execute="@form" render="listaEventos" />
                 </h:commandButton> 
              </h:form>
+
+        <br/>
         <f:view>
             <h:form id="listaEventos">
                 <h1><h:outputText value="List"/></h1>
@@ -90,7 +105,19 @@
                         </f:facet>
                         <h:outputText value="#{item.precio}"/>
                     </h:column>
-                 
+                    
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Latitud"/>
+                        </f:facet>
+                        <h:outputText class="latitud" value="#{item.latitud}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="longitud"/>
+                        </f:facet>
+                        <h:outputText class="longitud" value="#{item.longitud}"/>
+                    </h:column>
                     <h:column>
                         <h:commandButton id="VerEvento" value="VerEvento" action="#{agendaRestManagedBean.verEvento(item)}" />
                     </h:column>
@@ -112,7 +139,65 @@
                 
             </h:form>
         </f:view>
+<br/><br/><br/>
+mapa
+<br/><br/>
+        <div id="map"></div>
+        
+         <script>
+                var map;
+                function initMap() {
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                  center: {lat: 36.714835, lng: -4.475434},
+                  zoom: 12
+                });
+                var infoWindow = new google.maps.InfoWindow({map: map});
+
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(function(position) {
+                    var pos = {
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude
+                    };
+
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent('Location found.');
+                    map.setCenter(pos);
+                  }, function() {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                  });
+                } else {
+                  // Browser doesn't support Geolocation
+                  handleLocationError(false, infoWindow, map.getCenter());
+                }
+                
+                
+            // obtener latitudes y longitudes
+            latEvents  = document.getElementsByClassName("latitud");
+            longEvents = document.getElementsByClassName("longitud");
+            var limite = latEvents.length;
+            for (var i=0; i<limite; i++){
+                var uluru = {lat: latEvents[i].innerHTML, lng: longEvents[i].innerHTML};
+
+                var marker = new google.maps.Marker({
+                    position: uluru,
+                    map: map
+                    });       
+            }
+            }
+              function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(browserHasGeolocation ?
+                                      'Error: The Geolocation service failed.' :
+                                      'Error: Your browser doesn\'t support geolocation.');
+              }                  
+                  
+                
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJa3JCM3O5-HOrUclCF9tRVEIF53WDbwM&amp;callback=initMap">
+        </script>
+        <br/> 
+        
 
     </h:body>
-</html>
-
+</html> 

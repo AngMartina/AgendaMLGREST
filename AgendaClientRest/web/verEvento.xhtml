@@ -54,7 +54,7 @@ and open the template in the editor.
                     <h:outputLabel id="estado" value="#{agendaRestManagedBean.eventoSeleccionado.estado}" title="Estado" />
                     <h:outputLabel value="Palabrasclave:" for="palabrasclave" />
                     <h:outputLabel id="palabrasclave" value="#{agendaRestManagedBean.eventoSeleccionado.palabrasclave}" title="Palabrasclave" />
-                   
+                    <h:commandButton id="Volver" value="Volver" action="#{agendaRestManagedBean.volver()}"/> 
                 </h:panelGrid>
                 </div>
                 <div>
@@ -80,6 +80,7 @@ and open the template in the editor.
                         </script>
                 </div>
             </h:form>
+             
         </f:view>
 
     </body>
