@@ -6,65 +6,74 @@ and open the template in the editor.
 -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
-  <h:head></h:head>
-  <h:body>
-    <script type="text/javascript">
-      function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
-      }
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head></h:head>
+    <h:body>
+        <script type="text/javascript">
+            function handleClientLoad() {
+                gapi.load('client:auth2', initClient);
+            }
 
-      function initClient() {
-        gapi.client.init({
-            apiKey: 'AIzaSyDLCymEwbiWgB67Ly9fvBECL8W8sw5ode8',
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/plus/v1/rest'],
-            clientId: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
-            scope: 'email https://www.googleapis.com/auth/plus.me'
-        }).then(function () {
-          gapi.auth2.getAuthInstance().signIn();
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-        });
-      }
+            function initClient() {
+                gapi.client.init({
+                    apiKey: 'AIzaSyDLCymEwbiWgB67Ly9fvBECL8W8sw5ode8',
+                    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/plus/v1/rest'],
+                    clientId: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
+                    scope: 'email https://www.googleapis.com/auth/plus.me'
+                }).then(function () {
+                    gapi.auth2.getAuthInstance().signIn();
+                    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                });
+            }
 
-      function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-          makeApiCall();
-        }else{
-        }
-      }
+            function updateSigninStatus(isSignedIn) {
+                if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                    makeApiCall();
+                } else {
+                    gapi.auth2.getAuthInstance().signIn();
+                }
+            }
 
-      function handleSignInClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-      }
+            function handleSignInClick(event) {
+                if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                    makeApiCall();
+                }
+            }
 
-      function handleSignOutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
-      }
+            function handleSignOutClick(event) {
+                gapi.auth2.getAuthInstance().signOut();
+            }
 
-      function makeApiCall() {
-        var request = gapi.client.plus.people.get({ 
-            'userId' : 'me'
-        });
-        request.execute(function(resp) {
-        var primaryEmail = resp.emails[0].value;
-        document.getElementById('form:hi').value = primaryEmail;
-        document.getElementById('form:hh').click();
-        console.log('ID: ' + resp.id);
-        console.log('Display Name: ' + resp.displayName);
-        console.log('Email: ' + primaryEmail);
-        console.log('JSON Profile: ' + JSON.stringify(resp));
-        });  
-      }
-    </script>
-    <script src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
-    <h:form id="form">
-        <h:inputHidden id="hi" value="#{agendaRestManagedBean.email}" ></h:inputHidden>
-        <h:commandLink id="hh" action="#{agendaRestManagedBean.googleSignIn()}" style="display:none"/>
-    </h:form>
-    <h:button id="signin-button" onclick="handleSignInClick()">Sign In</h:button>
-    <h:button id="signout-button" onclick="handleSignOutClick()">Sign Out</h:button>
-  </h:body>
+            function makeApiCall() {
+                var request = gapi.client.plus.people.get({
+                    'userId': 'me'
+                });
+                request.execute(function (resp) {
+                    var primaryEmail = resp.emails[0].value;
+                    document.getElementById('form:hi').value = primaryEmail;
+                    document.getElementById('form:hh').click();
+                    console.log('ID: ' + resp.id);
+                    console.log('Display Name: ' + resp.displayName);
+                    console.log('Email: ' + primaryEmail);
+                    console.log('JSON Profile: ' + JSON.stringify(resp));
+                });
+            }
+        </script>
+        <script src="https://apis.google.com/js/api.js"
+                onload="this.onload = function () {};
+            handleClientLoad()"
+                onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
+        <h:form id="form">
+            <h:inputHidden id="hi" value="#{agendaRestManagedBean.email}" ></h:inputHidden>
+            <h:commandLink id="hh" action="#{agendaRestManagedBean.googleSignIn()}" style="display:none"/>
+            <h:button id="signin-button" onclick="handleSignInClick()">Sign In</h:button>
+            <h:button id="signout-button" onclick="handleSignOutClick()">Sign Out</h:button>
+        </h:form>
+        <br />
+        <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
+    </h:body>
 </html>
