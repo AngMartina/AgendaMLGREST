@@ -6,6 +6,8 @@
 package service;
 
 import entity.Evento;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -96,13 +98,22 @@ public class EventoFacadeREST extends AbstractFacade<Evento> {
         return em;
     }
     @GET
-    @Path("findEventsBy/{date}")
+    @Path("findEventsBy/{fechaParsear}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Evento> buscarEventoPorFecha(Date fecha){
+    public List<Evento> buscarEventoPorFecha(String fechaParsear) throws ParseException, DatatypeConfigurationException{
+        
+        SimpleDateFormat formateoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        Date fecha = formateoFecha.parse(fechaParsear);
+        
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(fecha);
+        
+        XMLGregorianCalendar fechaGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+        
         Query q;
         
         q = em.createQuery("SELECT e FROM Evento e WHERE :fecha BETWEEN e.fechainicio AND e.fechafin ORDER BY e.fechafin");
-        q.setParameter("fecha", fecha);
+        q.setParameter("fecha", fechaGregorianCalendar);
         return q.getResultList();
         
     }
@@ -121,11 +132,10 @@ public class EventoFacadeREST extends AbstractFacade<Evento> {
     @GET
     @Path("findEventsByUsuario/{email}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Evento> EventosDeUsuario(Integer id){
+    public List<Evento> EventosDeUsuario(String email){
         Query q;
-        String r = id.toString();
-        q = em.createQuery("SELECT e FROM Evento e WHERE :id=e.emailusuario.id");
-        q.setParameter("id", r);
+        q = em.createQuery("SELECT e FROM Evento e WHERE :email=e.emailusuario");
+        q.setParameter("email", email);
         
         return q.getResultList();
     }
