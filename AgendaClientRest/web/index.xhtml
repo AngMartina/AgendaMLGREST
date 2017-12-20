@@ -16,35 +16,18 @@ and open the template in the editor.
             function handleClientLoad() {
                 gapi.load('client:auth2', initClient);
             }
-
             function initClient() {
                 gapi.client.init({
                     apiKey: 'AIzaSyDLCymEwbiWgB67Ly9fvBECL8W8sw5ode8',
                     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/plus/v1/rest'],
                     clientId: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
                     scope: 'email https://www.googleapis.com/auth/plus.me'
-                }).then(function () {
-                    gapi.auth2.getAuthInstance().signIn();
-                    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
                 });
             }
 
-            function updateSigninStatus(isSignedIn) {
-                if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-                    makeApiCall();
-                } else {
-                    gapi.auth2.getAuthInstance().signIn();
-                }
-            }
-
             function handleSignInClick(event) {
-                if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                    gapi.auth2.getAuthInstance().signIn();
                     makeApiCall();
-                }
-            }
-
-            function handleSignOutClick(event) {
-                gapi.auth2.getAuthInstance().signOut();
             }
 
             function makeApiCall() {
@@ -70,10 +53,7 @@ and open the template in the editor.
         <h:form id="form">
             <h:inputHidden id="hi" value="#{agendaRestManagedBean.email}" ></h:inputHidden>
             <h:commandLink id="hh" action="#{agendaRestManagedBean.googleSignIn()}" style="display:none"/>
-            <h:button id="signin-button" onclick="handleSignInClick()">Sign In</h:button>
-            <h:button id="signout-button" onclick="handleSignOutClick()">Sign Out</h:button>
+            <button id="signin-button" onclick="handleSignInClick()" type="button" >Sign In</button>
         </h:form>
-        <br />
-        <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
     </h:body>
 </html>
