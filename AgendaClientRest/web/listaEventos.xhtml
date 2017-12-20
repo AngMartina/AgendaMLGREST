@@ -18,12 +18,12 @@
                 
             <h:selectOneRadio value="#{agendaRestManagedBean.busquedad}"  rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}">
                        <f:selectItem itemValue="1" itemLabel="Buscar por fecha"/> <br/>
-                       <f:selectItem itemValue="2" itemLabel="Buscar por código postal" /><br/>
+                       <f:selectItem itemValue="2" itemLabel="Todos los eventos" /><br/>
                        <f:selectItem itemValue="3" itemLabel="Buscar por preferencias" />
                     </h:selectOneRadio>
             <h:selectOneRadio value="#{agendaRestManagedBean.busquedad}"  rendered="#{agendaRestManagedBean.usuarioSeleccionado == null}">
                        <f:selectItem itemValue="1" itemLabel="Buscar por fecha"/> <br/>
-                       <f:selectItem itemValue="2" itemLabel="Buscar por código postal" /><br/>
+                       <f:selectItem itemValue="2" itemLabel="Todos los eventos" /><br/>
                        <f:selectItem itemValue="3" itemLabel="Ver todos los eventos" /><br/>
                     </h:selectOneRadio>
                 <div id="fechaBusqueda" >
@@ -32,11 +32,9 @@
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:inputText>
                  </div>
-                 <div id="cpBusqueda">
-                     <h:outputLabel value="Codigo Postal:" for="cp" />
-                     <h:inputText id="cpBusqueda" value="#{agendaRestManagedBean.distanciaKm}" title="cp" />
-                 </div>
-            <h:commandButton value="Buscar" onclick="#{agendaRestManagedBean.buscarPor()}">
+                
+            <h:commandButton value="Buscar" action="#{agendaRestManagedBean.buscarPor()}">
+                 <f:ajax execute="@form" render="listaEventos" />
                 </h:commandButton>
              </h:form> 
         <br/>

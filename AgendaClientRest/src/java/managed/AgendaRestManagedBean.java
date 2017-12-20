@@ -14,6 +14,7 @@ import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -128,14 +129,38 @@ public class AgendaRestManagedBean implements Serializable {
     public void setDistanciaKm(int distanciaKm) {
         this.distanciaKm = distanciaKm;
     }
+
+    public int getBusqueda() {
+        return busqueda;
+    }
+
+    public void setBusqueda(int busqueda) {
+        this.busqueda = busqueda;
+    }
+
+    public boolean isModificar() {
+        return modificar;
+    }
+
+    public void setModificar(boolean modificar) {
+        this.modificar = modificar;
+    }
+
     
-    
-    public List<Evento> listarEventos(){
-        
+    public List<Evento> listaTodosEventos(){
         ClienteEventos clienteEvento = new ClienteEventos();
-       
-        
+        Response r = clienteEvento.findAll_XML(Response.class);
+            
+        if(r.getStatus()==200){
+           GenericType<List<Evento>> genericType = new GenericType<List<Evento>>(){};
+           List<Evento> todosEventos= r.readEntity(genericType);    
+         return todosEventos;  
+        }
+       return null;
+    }
+    public List<Evento> listarEventos(){
         if(usuarioSeleccionado == null || usuarioSeleccionado.getTipoUsuario() == 2 ||usuarioSeleccionado.getTipoUsuario() == 1){ // No es Periodista
+            ClienteEventos clienteEvento = new ClienteEventos();
             Response r = clienteEvento.eventosVisibles_XML(Response.class);
             
             if(r.getStatus()==200){
@@ -145,15 +170,8 @@ public class AgendaRestManagedBean implements Serializable {
             
             }
         }else{ // Es periodista
-            Response r = clienteEvento.findAll_XML(Response.class);
-            
-            if(r.getStatus()==200){
-                GenericType<List<Evento>> genericType = new GenericType<List<Evento>>(){};
-                List<Evento> todosEventos= r.readEntity(genericType);    
-            return todosEventos; 
-            }
+            return this.listaTodosEventos();
         }
-        
         return null;
     }
     
@@ -346,18 +364,20 @@ public class AgendaRestManagedBean implements Serializable {
         return "verPerfil";
     }
     
-    public List<Evento> obtenerEventosUsuario(Usuarios usuario){
+    public List<Evento> obtenerEventosUsuario(){
         
-        ClienteEventos clienteEventos = new ClienteEventos();
-        
-        Response r = clienteEventos.EventosDeUsuario_XML(Response.class, usuario.getId().toString());
-        if(r.getStatus() == 200){
-            GenericType<List<Evento>> genericType = new GenericType<List<Evento>>(){};
-                List<Evento> todosEventos= r.readEntity(genericType);  
-                return todosEventos;
+        //Cojo todos los eventos y no los que están en la lista, porque le deben de aparecer los obsoletos también
+        ClienteEventos clienteEvento = new ClienteEventos();
+        List<Evento> todosEventos = this.listaTodosEventos();
+        List<Evento> eventosUsuario = new ArrayList<>();
+        for(Evento evento: todosEventos){
+            if(evento.getEmailusuario().equals(this.usuarioSeleccionado)){
+                eventosUsuario.add(evento);
+            }
         }
         
-        return null;
+        
+        return eventosUsuario;
     }
     
     public String verEvento(Evento evento){
@@ -435,75 +455,102 @@ public class AgendaRestManagedBean implements Serializable {
     }
     
       public void buscarPor(){
-        ClienteEventos clienteEvento = new ClienteEventos();
-        List<Evento> listaResultante = new ArrayList<>();
         if(0!=this.busqueda)
             switch (this.busqueda) {
            
             case 1: //Por fecha
                 if(fechaOrdenacion!=null){
-                    Response r = clienteEvento.buscarEventoPorFecha_XML(Response.class, fechaOrdenacion.toString());
-                    if(r.getStatus() == 200){
-                        GenericType<List<Evento>> genericType = new GenericType<List<Evento>>(){};
-                            listaResultante = r.readEntity(genericType);
-                    }
-                    
-                    for(Evento evento: listaResultante){
-                        if(this.usuarioSeleccionado.getTipoUsuario() != 3){
-                            if(evento.getEstado() != 0){
-                                listaEventos.add(evento);
-                            }
-                        }else{
-                            listaEventos.add(evento);
-                        }
-                    }
+                    listaEventos = listarEventosFecha(fechaOrdenacion);
                     busqueda = 0;
+                }else{
+                    listaEventos = listarEventos();
                 }
                    
                 break;
             case 2: //Por codigoPostal
                 //ANGELA TRABAJARÁ AQUI
+                listaEventos = listarEventos();
                 break;
                 
            
             case 3:
-                 List<Evento> listaPreferencias = listaEventosPreferencia(usuarioSeleccionado);
-                listaEventos = listaPreferencias;
-                listaPreferencias.forEach((e) -> {
-                    if(this.usuarioSeleccionado.getTipoUsuario()!=3){
-                        if(e.getEstado()!=0){
-                            listaEventos.add(e);
-                        }
-                    }else{
-                        listaEventos.add(e);
-                    } }
-                );
+                listaEventos = listaEventosPreferencia(usuarioSeleccionado);
                 busqueda = 0;
-                
                 break;
            
         }
     } 
     public List<Evento> listaEventosPreferencia(Usuarios usuario){
-        List<Evento> listaEventosAux = new ArrayList<>();
-        boolean eventoAñadido;
-        String[] preferencias = usuario.getPreferencias().split(";");
         
-        for(Evento evento: listaEventosAux){
-            String[] palabrasClave = evento.getPalabrasclave().split(";");
-            eventoAñadido = false;
-            
-            for(int i = 0; i < preferencias.length-1 && !eventoAñadido; i++){
-                for(int j = 0; j < palabrasClave.length-1 && !eventoAñadido; j++){
-                    if(palabrasClave[j].equals(preferencias[i])){
-                        listaEventos.add(evento);
-                        eventoAñadido = true;
+        List<Evento> todosEventos = this.listaTodosEventos();
+        String[] preferencias = usuario.getPreferencias().split(";");
+        List<Evento> eventosPorPreferencias = new ArrayList<Evento>();
+        boolean eventoAñadido;
+        
+            //Si es Periodista todos los eventos
+            if(usuario.getTipoUsuario() == 3){
+                
+                for(Evento evento: todosEventos){
+                    String[] palabrasClave = evento.getPalabrasclave().split(";");
+                    eventoAñadido = false;
+
+                    for(int i = 0; i <= preferencias.length-1 && !eventoAñadido; i++){
+                        for(int j = 0; j <= palabrasClave.length-1 && !eventoAñadido; j++){
+                            if(palabrasClave[j].equals(preferencias[i])){
+                                eventosPorPreferencias.add(evento);
+                                eventoAñadido = true;
+                            }
+                        }
+                    }
+                }
+            }else { //Si no lo es, sólo los validados.
+                for(Evento evento: todosEventos){
+                    if(evento.getEstado() != 0){
+                        String[] palabrasClave = evento.getPalabrasclave().split(";");
+                        eventoAñadido = false;
+
+                        for(int i = 0; i < preferencias.length-1 && !eventoAñadido; i++){
+                            for(int j = 0; j < palabrasClave.length-1 && !eventoAñadido; j++){
+                                if(palabrasClave[j].equals(preferencias[i])){
+                                    eventosPorPreferencias.add(evento);
+                                    eventoAñadido = true;
+                                }
+                            }
+                        }
+                    }
+                    
+            }
+                
+        }
+        
+        return eventosPorPreferencias;
+    }
+    
+    public List<Evento> listarEventosFecha (Date fecha){
+        List<Evento> listaResultante = new ArrayList<>();
+        List<Evento> todosEventos = this.listaTodosEventos();
+        
+        if(this.usuarioSeleccionado.getTipoUsuario() == 3){
+            for(Evento evento: todosEventos){
+                if(evento.getFechainicio().before(fecha) && fecha.before(evento.getFechafin())){
+                    listaResultante.add(evento);
+                }
+            }
+        }else{
+            for(Evento evento: todosEventos){
+                if(evento.getFechainicio().before(fecha) && fecha.before(evento.getFechafin())){
+                    if(evento.getEstado() != 0){
+                        listaResultante.add(evento);
                     }
                 }
             }
         }
         
-        return listaEventos;
+        
+        return listaResultante;
+        
+        
+        
     }
     
 
