@@ -35,6 +35,7 @@ public class AgendaRestManagedBean implements Serializable {
     private String mensajeError;
     private int ordenacion;
     private boolean modificar;
+    private String email;
     
     
     
@@ -80,6 +81,15 @@ public class AgendaRestManagedBean implements Serializable {
     public void setOrdenacion(int ordenacion) {
         this.ordenacion = ordenacion;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
     
     
     public List<Evento> listarEventos(){
@@ -107,6 +117,22 @@ public class AgendaRestManagedBean implements Serializable {
         }
         
         return null;
+    }
+    
+    public String googleSignIn(){
+        ClienteUsuarios clienteUsuario = new ClienteUsuarios();
+        Response r = clienteUsuario.findByEmail_XML(Response.class, email);
+            if(r.getStatus() == 200){
+                GenericType<Usuarios> genericType = new GenericType<Usuarios>(){};
+                usuarioSeleccionado = r.readEntity(genericType);
+            }
+        return "listaEventos";
+    }
+    
+    public String googleSignOut(){
+        ClienteUsuarios clienteUsuario = null;
+        email = "";
+        return "index";
     }
     
     public String seleccionUsuario(int aux){
@@ -145,7 +171,6 @@ public class AgendaRestManagedBean implements Serializable {
     }
     
     public String salir(){
-        
         usuarioSeleccionado = null;
         return "index";
     }
