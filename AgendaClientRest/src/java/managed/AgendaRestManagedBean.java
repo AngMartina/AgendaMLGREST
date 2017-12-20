@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
+
 /**
  *
  * @author Angela
@@ -42,9 +43,6 @@ public class AgendaRestManagedBean implements Serializable {
     private int busqueda;
     private boolean modificar;
     private Date fechaOrdenacion;
-    private int distanciaKm;
-    
-    
     
     
     @PostConstruct
@@ -121,13 +119,8 @@ public class AgendaRestManagedBean implements Serializable {
         this.fechaOrdenacion = fechaOrdenacion;
     }
 
-    public int getDistanciaKm() {
-        return distanciaKm;
-    }
-
-    public void setDistanciaKm(int distanciaKm) {
-        this.distanciaKm = distanciaKm;
-    }
+    
+    
     
     
     public List<Evento> listarEventos(){
@@ -461,12 +454,7 @@ public class AgendaRestManagedBean implements Serializable {
                 }
                    
                 break;
-            case 2: //Por codigoPostal
-                //ANGELA TRABAJARÁ AQUI
-                break;
-                
-           
-            case 3:
+            case 2: 
                  List<Evento> listaPreferencias = listaEventosPreferencia(usuarioSeleccionado);
                 listaEventos = listaPreferencias;
                 listaPreferencias.forEach((e) -> {
@@ -484,6 +472,17 @@ public class AgendaRestManagedBean implements Serializable {
            
         }
     } 
+     /* 
+      public double distanciaHaversine(double lat1, double lat2, double long1, double long2){
+          int radioTierra = 6378;
+          double difLat= (lat2-lat1)*(Math.PI/180);//en radianes
+          double difLong=(long2-long1)*(Math.PI/180);
+          double a = Math.pow(Math.sin(difLat/2), 2)+Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.pow(Math.sin(difLong/2), 2);
+          double c = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          
+          return radioTierra*c;
+      }*/
+      
     public List<Evento> listaEventosPreferencia(Usuarios usuario){
         List<Evento> listaEventosAux = new ArrayList<>();
         boolean eventoAñadido;
