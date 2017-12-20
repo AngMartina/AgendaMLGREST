@@ -44,6 +44,7 @@ public class AgendaRestManagedBean implements Serializable {
     private boolean modificar;
     private Date fechaOrdenacion;
     private int distanciaKm;
+    private String email;
     
     
     
@@ -146,7 +147,30 @@ public class AgendaRestManagedBean implements Serializable {
         this.modificar = modificar;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
+    public String googleSignIn(){
+        ClienteUsuarios clienteUsuario = new ClienteUsuarios();
+        Response r = clienteUsuario.findByEmail_XML(Response.class, email);
+            if(r.getStatus() == 200){
+                GenericType<Usuarios> genericType = new GenericType<Usuarios>(){};
+                usuarioSeleccionado = r.readEntity(genericType);
+            }
+            listaEventos = listarEventos();
+        return "listaEventos";
+    }
+    
+    public String googleSignOut(){
+        ClienteUsuarios clienteUsuario = null;
+        email = "";
+        return "index";
+    }
     public List<Evento> listaTodosEventos(){
         ClienteEventos clienteEvento = new ClienteEventos();
         Response r = clienteEvento.findAll_XML(Response.class);
@@ -218,7 +242,7 @@ public class AgendaRestManagedBean implements Serializable {
         
         this.usuarioSeleccionado = null;
         this.ordenacion = 0;
-        
+        email = "";
         return "index";
     }
     

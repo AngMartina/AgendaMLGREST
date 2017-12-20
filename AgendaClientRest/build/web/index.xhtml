@@ -7,18 +7,70 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
         <title>Inicio Sesion Prueba</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </h:head>
-    <body>
-        
-        
+    <h:body>
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text">AGENDA MLG</p>
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </nav>
+        <script type="text/javascript">
+            function handleClientLoad() {
+                gapi.load('client:auth2', initClient);
+            }
+            function initClient() {
+                gapi.client.init({
+                    apiKey: 'AIzaSyDLCymEwbiWgB67Ly9fvBECL8W8sw5ode8',
+                    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/plus/v1/rest'],
+                    clientId: '208840706342-38re9h49c7jkco0agfo4r1h95cdf13bk.apps.googleusercontent.com',
+                    scope: 'email https://www.googleapis.com/auth/plus.me'
+                });
+            }
+            function handleSignInClick(event) {
+                    gapi.auth2.getAuthInstance().signIn();
+                    makeApiCall();
+            }
+            function makeApiCall() {
+                var request = gapi.client.plus.people.get({
+                    'userId': 'me'
+                });
+                request.execute(function (resp) {
+                    var primaryEmail = resp.emails[0].value;
+                    document.getElementById('form:hi').value = primaryEmail;
+                    document.getElementById('form:hh').click();
+                    console.log('ID: ' + resp.id);
+                    console.log('Display Name: ' + resp.displayName);
+                    console.log('Email: ' + primaryEmail);
+                    console.log('JSON Profile: ' + JSON.stringify(resp));
+                });
+            }
+        </script>
+        <script src="https://apis.google.com/js/api.js"
+                onload="this.onload = function () {};
+            handleClientLoad()"
+                onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        </script>
+        <h:form id="form">
+            <h:inputHidden id="hi" value="#{agendaRestManagedBean.email}" ></h:inputHidden>
+            <h:commandLink id="hh" action="#{agendaRestManagedBean.googleSignIn()}" style="display:none"/>
+            <button id="signin-button" onclick="handleSignInClick()" type="button" >Sign In</button>
+        </h:form>
         <h:form>
         <h:commandButton id="invitado" value="Iniciar invitado" action="#{agendaRestManagedBean.seleccionUsuario(0)}" />
         <h:commandButton id="usuario" value="Iniciar usuario" action="#{agendaRestManagedBean.seleccionUsuario(1)}" />
         <h:commandButton id="superusuario" value="Iniciar superusuario" action="#{agendaRestManagedBean.seleccionUsuario(2)}" />
         <h:commandButton id="periodista" value="Iniciar periodista" action="#{agendaRestManagedBean.seleccionUsuario(3)}" />
         </h:form>
-    </body>
+    </h:body>
 </html>

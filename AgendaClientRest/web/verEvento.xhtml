@@ -5,12 +5,95 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
-        <title>TODO supply a title</title>
+        <title>VerEvento</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+            #map {
+                height: 300px;
+                width: 300px;
+            }
+            div{
+                max-width: 500px;
+                float: left;
+                margin-right: 100px;
+            
+        </style>
     </head>
     <body>
-        ANGELA TRABAJA AQUI, PARA VER UN EVENTO.
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text">AGENDA MLG</p>
+            <ul class="nav navbar-nav">
+                <li><a href="verPerfil.xhtml">Ver Perfil</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="listaEventos.xhtml">Volver</a></li>
+                <li><a href="#"></a></li>
+                <li><a href="index.xhtml">Salir</a></li>
+                <li><a href="#"></a></li>
+            </ul>
+        </nav>
+        <f:view>
+            <h:form>
+                <div>
+                    <h1><h:outputText value="Evento"/></h1>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="Id:" for="id" />
+                        <h:outputLabel id="id" value="#{agendaRestManagedBean.eventoSeleccionado.id}" title="Id" />
+                        <h:outputLabel value="Fechainicio:" for="fechainicio" />
+                        <h:outputLabel id="fechainicio" value="#{agendaRestManagedBean.eventoSeleccionado.fechainicio}" title="Fechainicio" >
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputLabel>
+                        <h:outputLabel value="Fechafin:" for="fechafin" />
+                        <h:outputLabel id="fechafin" value="#{agendaRestManagedBean.eventoSeleccionado.fechafin}" title="Fechafin" >
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputLabel>
+                        <h:outputLabel value="Descripcion:" for="descripcion" />
+                        <h:outputLabel id="descripcion" value="#{agendaRestManagedBean.eventoSeleccionado.descripcion}" title="Descripcion" />
+                        <h:outputLabel value="Localizacion:" for="localizacion" />
+                        <h:outputLabel id="localizacion" value="#{agendaRestManagedBean.eventoSeleccionado.localizacion}" title="Localizacion" />
+                        <h:outputLabel value="Codigopostal:" for="codigopostal" />
+                        <h:outputLabel id="codigopostal" value="#{agendaRestManagedBean.eventoSeleccionado.codigopostal}" title="Codigopostal"/>
+                        <h:outputLabel value="Precio:" for="precio" />
+                        <h:outputLabel id="precio" value="#{agendaRestManagedBean.eventoSeleccionado.precio}" title="Precio" />
+                        <h:outputLabel value="Url:" for="url" />
+                        <h:outputLabel id="url" value="#{agendaRestManagedBean.eventoSeleccionado.url}" title="Url" />
+                        <h:outputLabel value="Estado:" for="estado" />
+                        <h:outputLabel id="estado" value="#{agendaRestManagedBean.eventoSeleccionado.estado}" title="Estado" />
+                        <h:outputLabel value="Palabrasclave:" for="palabrasclave" />
+                        <h:outputLabel id="palabrasclave" value="#{agendaRestManagedBean.eventoSeleccionado.palabrasclave}" title="Palabrasclave" />
+                    </h:panelGrid>
+                </div>
+                <div>
+                    <h3>Localización</h3>
+                    <div id="map"></div>
+                    <script>
+                        var map;
+                        var latitud = #{agendaRestManagedBean.eventoSeleccionado.latitud};
+                        var longitud = #{agendaRestManagedBean.eventoSeleccionado.longitud};
+                        function initMap() {
+                            var dirEvento = {lat: latitud, lng: longitud};
+                            map = new google.maps.Map(document.getElementById('map'), {
+                                center: {lat: latitud, lng: longitud},
+                                zoom: 17
+                            });
+                            var marker = new google.maps.Marker({
+                                position: dirEvento,
+                                map: map
+                            });
+                        }
+                    </script>
+                    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJa3JCM3O5-HOrUclCF9tRVEIF53WDbwM&amp;callback=initMap">
+                    </script>
+                </div>
+            </h:form>
+        </f:view>
     </body>
 </html>

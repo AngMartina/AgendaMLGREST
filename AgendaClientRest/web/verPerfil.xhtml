@@ -6,8 +6,25 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Perfil de Usuario</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </h:head>
     <h:body>
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text">AGENDA MLG</p>
+            <ul class="nav navbar-nav">
+                    <li><a href="verPerfil.xhtml">Ver Perfil</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="listaEventos.xhtml">Volver</a></li>
+                <li><a href="#"></a></li>
+                <li><a href="index.xhtml">Salir</a></li>
+                <li><a href="#"></a></li>
+            </ul>
+        </nav>
         <f:view>
             <h1><h:outputText value="Notificaciones"/></h1>
         <ul>
@@ -92,7 +109,6 @@
                     </h:column>
           
                 </h:dataTable>
-                <h:commandButton action="#{agendaRestManagedBean.volver()}" value="Volver"/>
             </h:form>
             
         </f:view>

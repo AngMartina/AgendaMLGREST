@@ -1,115 +1,231 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
     <h:head>
         <title>Lista de eventos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+            #map {
+                height: 300px;
+                width: 100%;
+            }
+            /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+            .row.content {height: 500px}
+            /* Set gray background color and 100% height */
+            .sidenav {
+                background-color: #f1f1f1;
+                height: 60%;
+            }
+            /* Set black background color, white text and some padding */
+            footer {
+                background-color: #555;
+                color: white;
+                padding: 15px;
+            }
+            /* On small screens, set height to 'auto' for sidenav and grid */
+            @media screen and (max-width: 767px) {
+                .sidenav {
+                    height: auto;
+                    padding: 15px;
+                }
+                .row.content {height: auto;} 
+            }
+        </style>
+
     </h:head>
     <h:body>
-        <h:form>    
-        <h:commandButton id="Salir" value="Salir" action="#{agendaRestManagedBean.salir()}" />
-        <br/>  
-            <h:commandButton id="VerPerfil" value="Ver Perfil" action="#{agendaRestManagedBean.verPerfil()}" rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}"/>
-        <br/>
-        </h:form>   
-        <br/>
-        <h:form id="busqueda">
-                
-            <h:selectOneRadio value="#{agendaRestManagedBean.busquedad}"  rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}">
-                       <f:selectItem itemValue="1" itemLabel="Buscar por fecha"/> <br/>
-                       <f:selectItem itemValue="2" itemLabel="Todos los eventos" /><br/>
-                       <f:selectItem itemValue="3" itemLabel="Buscar por preferencias" />
-                    </h:selectOneRadio>
-            <h:selectOneRadio value="#{agendaRestManagedBean.busquedad}"  rendered="#{agendaRestManagedBean.usuarioSeleccionado == null}">
-                       <f:selectItem itemValue="1" itemLabel="Buscar por fecha"/> <br/>
-                       <f:selectItem itemValue="2" itemLabel="Todos los eventos" /><br/>
-                       <f:selectItem itemValue="3" itemLabel="Ver todos los eventos" /><br/>
-                    </h:selectOneRadio>
-                <div id="fechaBusqueda" >
-                    <h:outputLabel value="Fecha:" for="fecha" />
-                    <h:inputText id="fechaBusqueda" value="#{agendaRestManagedBean.fechaOrdenacion}" title="Fecha" >
-                        <f:convertDateTime pattern="dd/MM/yyyy" />
-                    </h:inputText>
-                 </div>
-                
-            <h:commandButton value="Buscar" action="#{agendaRestManagedBean.buscarPor()}">
-                 <f:ajax execute="@form" render="listaEventos" />
-                </h:commandButton>
-             </h:form> 
-        <br/>
-        <h:form id="ordenacion">
-            <h:selectOneRadio value="#{agendaRestManagedBean.ordenacion}">
-                   <f:selectItem itemValue="1" itemLabel="Ordenar por precio" /><br/>
-                   <f:selectItem itemValue="2" itemLabel="Ordenar por fecha" /><br/>
-                   <f:selectItem itemValue="3" itemLabel="Ordenar por localización" /><br/>
-                   <f:selectItem itemValue="4" itemLabel="Sin ordenar" /><br/>
-                   <f:ajax execute="@form" listener="#{agendaRestManagedBean.ordenar()}" />
-                </h:selectOneRadio>
-                 <h:commandButton value="Ordenar">
-                    <f:ajax execute="@form" render="listaEventos" />
-                </h:commandButton> 
-             </h:form>
-        <f:view>
-            <h:form id="listaEventos">
-                <h1><h:outputText value="List"/></h1>
-                <h:dataTable value="#{agendaRestManagedBean.listaEventos}" var="item">
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Fechainicio"/>
-                        </f:facet>
-                        <h:outputText value="#{item.fechainicio}">
-                            <f:convertDateTime pattern="MM/dd/yyyy" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Fechafin"/>
-                        </f:facet>
-                        <h:outputText value="#{item.fechafin}">
-                            <f:convertDateTime pattern="MM/dd/yyyy" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Descripcion"/>
-                        </f:facet>
-                        <h:outputText value="#{item.descripcion}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Localizacion"/>
-                        </f:facet>
-                        <h:outputText value="#{item.localizacion}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Precio"/>
-                        </f:facet>
-                        <h:outputText value="#{item.precio}"/>
-                    </h:column>
-                    <h:column>
-                        <h:commandButton id="VerEvento" value="VerEvento" action="#{agendaRestManagedBean.verEvento(item)}" />
-                    </h:column>
-                    <h:column>
-                        
-                        <h:commandButton id="Modificar" value="Modificar" action="#{agendaRestManagedBean.modificarEvento(item)}" rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}" />
-                    </h:column>
-                    <h:column>
-                        
-                        <h:commandButton id="Eliminar" value="Eliminar" action="#{agendaRestManagedBean.eliminarEvento(item)}" rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}">
-                            <f:ajax execute="@form" render="listaEventos"/>
-                        </h:commandButton>
-                    </h:column>
-                    
-                </h:dataTable>
-                
-                <h:commandButton id="CrearEvento" value="Crear Evento" action="#{agendaRestManagedBean.crearEvento()}" />
-                <h:commandButton id="Validar" value="Validar" action="#{agendaRestManagedBean.verEventosSinValidar()}" rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}"/>
-                
-            </h:form>
-        </f:view>
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text">AGENDA MLG</p>
+            <ul class="nav navbar-nav">
+                <li><a href="verPerfil.xhtml">Ver Perfil</a></li>
+                <li><a href="#"></a></li>
+                <li><a href="crearEvento.xhtml">Crear Evento</a></li>
 
-    </h:body>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"></a></li>
+                <form>
+                    
+                
+                <h:commandLink action="#{agendaRestManagedBean.salir()}" value="Salir"/>
+                </form>
+                <li><a href="#"></a></li>
+            </ul>
+        </nav>
+        <div class="container-fluid">
+            <div class="row content">
+                <div class="col-sm-3 sidenav">
+                    <h:form id="busqueda">
+
+                        <h:selectOneRadio value="#{agendaRestManagedBean.busquedad}"  rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}">
+                            <f:selectItem itemValue="1" itemLabel="Buscar por fecha"/> <br/>
+                            <f:selectItem itemValue="2" itemLabel="Todos los eventos" /><br/>
+                            <f:selectItem itemValue="3" itemLabel="Buscar por preferencias" />
+                        </h:selectOneRadio>
+                        <h:selectOneRadio value="#{agendaRestManagedBean.busquedad}"  rendered="#{agendaRestManagedBean.usuarioSeleccionado == null}">
+                            <f:selectItem itemValue="1" itemLabel="Buscar por fecha"/> <br/>
+                            <f:selectItem itemValue="2" itemLabel="Todos los eventos" /><br/>
+                            <f:selectItem itemValue="3" itemLabel="Ver todos los eventos" /><br/>
+                        </h:selectOneRadio>
+                        <div id="fechaBusqueda" >
+                            <h:outputLabel value="Fecha:" for="fecha" />
+                            <h:inputText id="fechaBusqueda" value="#{agendaRestManagedBean.fechaOrdenacion}" title="Fecha" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:inputText>
+                        </div>
+
+                        <h:commandButton value="Buscar" action="#{agendaRestManagedBean.buscarPor()}">
+                            <f:ajax execute="@form" render="listaEventos" />
+                        </h:commandButton>
+                    </h:form> 
+                    <br/>
+                    <h:form id="ordenacion">
+                        <h:selectOneRadio value="#{agendaRestManagedBean.ordenacion}">
+                            <f:selectItem itemValue="1" itemLabel="Ordenar por precio" /><br/>
+                            <f:selectItem itemValue="2" itemLabel="Ordenar por fecha" /><br/>
+                            <f:selectItem itemValue="3" itemLabel="Ordenar por localización" /><br/>
+                            <f:selectItem itemValue="4" itemLabel="Sin ordenar" /><br/>
+                            <f:ajax execute="@form" listener="#{agendaRestManagedBean.ordenar()}" />
+                        </h:selectOneRadio>
+                        <h:commandButton value="Ordenar">
+                            <f:ajax execute="@form" render="listaEventos" />
+                        </h:commandButton> 
+                    </h:form>
+                </div>
+                <f:view>
+                    <h:form id="listaEventos">
+                        <h1><h:outputText value="List"/></h1>
+                        <h:dataTable value="#{agendaRestManagedBean.listaEventos}" var="item">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fechainicio"/>
+                                </f:facet>
+                                <h:outputText value="#{item.fechainicio}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fechafin"/>
+                                </f:facet>
+                                <h:outputText value="#{item.fechafin}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Descripcion"/>
+                                </f:facet>
+                                <h:outputText value="#{item.descripcion}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Localizacion"/>
+                                </f:facet>
+                                <h:outputText value="#{item.localizacion}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Precio"/>
+                                </f:facet>
+                                <h:outputText value="#{item.precio}"/>
+                            </h:column>
+                            <h:column>
+                                <h:commandButton id="VerEvento" value="VerEvento" action="#{agendaRestManagedBean.verEvento(item)}" />
+                            </h:column>
+                            <h:column>
+
+                                <h:commandButton id="Modificar" value="Modificar" action="#{agendaRestManagedBean.modificarEvento(item)}" rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}" />
+                            </h:column>
+                            <h:column>
+
+                                <h:commandButton id="Eliminar" value="Eliminar" action="#{agendaRestManagedBean.eliminarEvento(item)}" rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}">
+                                    <f:ajax execute="@form" render="listaEventos"/>
+                                </h:commandButton>
+                            </h:column>
+
+                        </h:dataTable>
+
+                        <h:commandButton id="Validar" value="Validar" action="#{agendaRestManagedBean.verEventosSinValidar()}" rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}"/>
+
+                    </h:form>
+                </f:view>
+
+                <br/><br/><br/>
+
+                <div id="map"></div>
+
+                <script>
+                    var map;
+                    function initMap() {
+                    var map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 36.714835, lng: -4.475434},
+                            zoom: 15
+                    });
+                    var infoWindow = new google.maps.InfoWindow({map: map});
+                    if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                    var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                    };
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent('Estás aquí');
+                    map.setCenter(pos);
+                    }, function () {
+                    handleLocationError(true, infoWindow, map.getCenter());
+                    });
+                    } else {
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
+                    }
+                        <c:forEach items="#{agendaRestManagedBean.listaEventos}" var="item">
+                        var dirEvento = {lat: #{item.latitud}, lng: #{item.longitud}};
+                
+                var marker = new google.maps.Marker({
+                            position: dirEvento,
+                            map: map,
+                            title: '#{item.descripcion}'
+                            });  
+                    
+                            var contentString = '<h1>#{item.descripcion}</h1>'+
+                                    '<p>Fecha inicio: #{item.fechainicio}</p>'+
+                                        '<p>Fecha fin: #{item.fechafin.toString()}</p>'+
+                                            '<p>Precio: #{item.precio}</p>'+
+                                            '<p>Palabras clave: #{item.palabrasclave}</p>';
+
+            attachMessage(marker, contentString);
+
+                </c:forEach>
+                    }
+                    function attachMessage(marker, message) {
+                    var infowindow = new google.maps.InfoWindow({
+                    content: message
+                    });
+                    marker.addListener('click', function () {
+                    infowindow.open(marker.get('map'), marker);
+                    });
+                    }
+                    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent(browserHasGeolocation ?
+                            'Error: The Geolocation service failed.' :
+                            'Error: Your browser doesn\'t support geolocation.');
+                    }
+    </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJa3JCM3O5-HOrUclCF9tRVEIF53WDbwM&amp;callback=initMap"></script>
+     
+        </div>
+        </div>
+</h:body>
 </html>
 
