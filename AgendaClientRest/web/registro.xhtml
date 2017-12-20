@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>Registro usuario</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <f:view>
+            <h:form>
+                <h1><h:outputText value="Crear Usuario"/></h1>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Nombre" for="nombre" />
+                    <h:inputText id="nombre" value="#{agendaRestManagedBean.usuarioSeleccionado.nombre}" title="Nombre" required="true" requiredMessage="Introduzca nombre">
+                        
+                    </h:inputText>                    
+                    <h:outputLabel value="Apellidos" for="apellidos" />
+                    <h:inputText id="apellidos" value="#{agendaRestManagedBean.usuarioSeleccionado.apellidos}" title="Apellidos" required="true" requiredMessage="Introduzca apellidos">
+                        
+                    </h:inputText>
+                    <h:outputLabel value="Contrasena" for="contrasena" />
+                    <h:inputText id="contrasena" value="#{agendaRestManagedBean.usuarioSeleccionado.contrasenna}" title="Contraseña" required="true" requiredMessage="Introduzca contraeña"/>
+                    
+                </h:panelGrid>
+                <h:outputText value="#{agendaRestManagedBean.mensajeError}"/>
+                <h:commandButton action="#{agendaRestManagedBean.crearUsuario()}" value="Crear"/>
+                
+            </h:form>
+        </f:view>
+    </body>
+</html>

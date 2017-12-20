@@ -161,9 +161,12 @@ public class AgendaRestManagedBean implements Serializable {
             if(r.getStatus() == 200){
                 GenericType<Usuarios> genericType = new GenericType<Usuarios>(){};
                 usuarioSeleccionado = r.readEntity(genericType);
-            }
             listaEventos = listarEventos();
         return "listaEventos";
+            }else{
+                
+        return "registro";
+            }
     }
     
     public String googleSignOut(){
@@ -416,6 +419,18 @@ public class AgendaRestManagedBean implements Serializable {
         preferencias = Arrays.asList(preferenciasUsuario);
         
         return "editarPerfil";
+    }
+    
+    public String crearUsuario(){
+        ClienteUsuarios clienteUsuario = new ClienteUsuarios();
+           
+        String preferenciasCadena ="";
+        usuarioSeleccionado.setEmail(email);
+        usuarioSeleccionado.setPreferencias(preferenciasCadena);
+        usuarioSeleccionado.setTipoUsuario(2);
+        clienteUsuario.create_XML(usuarioSeleccionado);
+        
+        return "index";
     }
     
     public String actualizarUsuario(){
