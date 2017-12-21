@@ -8,11 +8,28 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <head>
+    <h:head>
         <title>Registro usuario</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
+       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"></meta>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </h:head>
+    <h:body>
+         <nav class="navbar navbar-inverse">
+            <p class="navbar-text" style="font-size: 20px;margin-top: 5px;line-height: 35px;">AGENDA MLG</p>
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li id='botonSalir' >
+                    <h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.salir()}" value='Cancelar'/>
+                    </h:form>
+                </li>
+                 <li><a href="#"></a></li>
+            </ul>
+        </nav>
         <f:view>
             <h:form>
                 <h1><h:outputText value="Crear Usuario"/></h1>
@@ -26,7 +43,7 @@ and open the template in the editor.
                         
                     </h:inputText>
                     <h:outputLabel value="Contrasena" for="contrasena" />
-                    <h:inputText id="contrasena" value="#{agendaRestManagedBean.usuarioSeleccionado.contrasenna}" title="Contraseña" required="true" requiredMessage="Introduzca contraeña"/>
+                    <h:inputSecret id="contrasena" value="#{agendaRestManagedBean.usuarioSeleccionado.contrasenna}" title="Contraseña" required="true" requiredMessage="Introduzca contraeña"/>
                     
                 </h:panelGrid>
                 <h:outputText value="#{agendaRestManagedBean.mensajeError}"/>
@@ -34,5 +51,5 @@ and open the template in the editor.
                 
             </h:form>
         </f:view>
-    </body>
+    </b:body>
 </html>

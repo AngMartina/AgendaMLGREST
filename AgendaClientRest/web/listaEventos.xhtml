@@ -23,7 +23,7 @@
             /* Set gray background color and 100% height */
             .sidenav {
                 background-color: #f1f1f1;
-                height: 60%;
+                height: 80%;
             }
             /* Set black background color, white text and some padding */
             footer {
@@ -32,32 +32,46 @@
                 padding: 15px;
             }
             /* On small screens, set height to 'auto' for sidenav and grid */
-            @media screen and (max-width: 767px) {
+            @media screen and (max-width: 600px) {
                 .sidenav {
                     height: auto;
                     padding: 15px;
                 }
                 .row.content {height: auto;} 
             }
+            th{
+                text-align: center;
+            }
         </style>
 
     </h:head>
     <h:body>
         <nav class="navbar navbar-inverse">
-            <p class="navbar-text">AGENDA MLG</p>
+            <p class="navbar-text" style="font-size: 20px;margin-top: 5px;line-height: 35px;">AGENDA MLG</p>
             <ul class="nav navbar-nav">
-                <li><a href="verPerfil.xhtml">Ver Perfil</a></li>
                 <li><a href="#"></a></li>
-                <li><a href="crearEvento.xhtml">Crear Evento</a></li>
+                <li><a href="#"></a></li>
+                <li><a href="#"></a></li>
+                <li><a href="#"></a></li>
+                <li><a href="#"></a></li>
+                <li><h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.verPerfil()}" value='Ver perfil' rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}"/>
+                    </h:form></li>
+                <li><a href="#"></a></li>
+                <li>
+                    <h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.crearEvento()}" value='Crear Evento'/>
+                    </h:form>
+                </li>
 
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right"> 
                 <li><a href="#"></a></li>
-                <form>
-                    
-                
-                <h:commandLink action="#{agendaRestManagedBean.salir()}" value="Salir"/>
-                </form>
+                <li id='botonSalir' >
+                    <h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.salir()}" value='Salir'/>
+                    </h:form>
+                </li>
                 <li><a href="#"></a></li>
             </ul>
         </nav>
@@ -78,7 +92,7 @@
                         </h:selectOneRadio>
                         <div id="fechaBusqueda" >
                             <h:outputLabel value="Fecha:" for="fecha" />
-                            <h:inputText id="fechaBusqueda" value="#{agendaRestManagedBean.fechaOrdenacion}" title="Fecha" >
+                            <h:inputText id="fechaBusqueda" value="#{agendaRestManagedBean.fechaOrdenacion}" title="dd/mm/aaaa" >
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </h:inputText>
                         </div>
@@ -103,8 +117,8 @@
                 </div>
                 <f:view>
                     <h:form id="listaEventos">
-                        <h1><h:outputText value="List"/></h1>
-                        <h:dataTable value="#{agendaRestManagedBean.listaEventos}" var="item">
+                        <h1><h:outputText value="Eventos" style="margin-left: 20px;"/></h1>
+                        <h:dataTable style='text-align: center; width: 75%' value="#{agendaRestManagedBean.listaEventos}" var="item">
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="Fechainicio"/>
@@ -196,10 +210,13 @@
                             map: map,
                             title: '#{item.descripcion}'
                             });  
+                            
+                            var yearInicio = #{item.fechainicio.year} + 1900;
+                            var yearFin = #{item.fechafin.year} + 1900;
                     
                             var contentString = '<h1>#{item.descripcion}</h1>'+
-                                    '<p>Fecha inicio: #{item.fechainicio}</p>'+
-                                        '<p>Fecha fin: #{item.fechafin.toString()}</p>'+
+                            '<p>Fecha inicio: #{item.fechainicio.day}/#{item.fechainicio.month}/'+yearInicio+'</p>'+
+                            '<p>Fecha fin: #{item.fechafin.day}/#{item.fechafin.month}/'+yearFin+'</p>'+
                                             '<p>Precio: #{item.precio}</p>'+
                                             '<p>Palabras clave: #{item.palabrasclave}</p>';
 

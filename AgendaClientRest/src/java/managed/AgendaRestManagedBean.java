@@ -250,6 +250,7 @@ public class AgendaRestManagedBean implements Serializable {
     }
     
     public String crearEvento(){
+        this.eventoSeleccionado = new Evento();
         return "crearEvento";
     }
     
@@ -427,7 +428,8 @@ public class AgendaRestManagedBean implements Serializable {
         String preferenciasCadena ="";
         usuarioSeleccionado.setEmail(email);
         usuarioSeleccionado.setPreferencias(preferenciasCadena);
-        usuarioSeleccionado.setTipoUsuario(2);
+        usuarioSeleccionado.setTipoUsuario(1); //Usuario normal
+        usuarioSeleccionado.setNotificaciones("");
         clienteUsuario.create_XML(usuarioSeleccionado);
         
         return "index";
@@ -448,7 +450,7 @@ public class AgendaRestManagedBean implements Serializable {
         
         clienteUsuario.edit_XML(usuarioSeleccionado, usuarioSeleccionado.getId().toString());
         
-        return "null";
+        return "verPerfil";
     }
     
     public String borrarUsuario(){

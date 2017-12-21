@@ -12,18 +12,36 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </h:head>
     <h:body>
-        <nav class="navbar navbar-inverse">
-            <p class="navbar-text">AGENDA MLG</p>
+         <nav class="navbar navbar-inverse">
+            <p class="navbar-text" style="font-size: 20px;margin-top: 5px;line-height: 35px;">AGENDA MLG</p>
             <ul class="nav navbar-nav">
-                    <li><a href="verPerfil.xhtml">Ver Perfil</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="listaEventos.xhtml">Volver</a></li>
                 <li><a href="#"></a></li>
-                <li><a href="index.xhtml">Salir</a></li>
+                <li><a href="#"></a></li>
+                <li><a href="#"></a></li>
+                <li><a href="#"></a></li>
+                <li><a href="#"></a></li>
+                <li><h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.verPerfil()}" value='Ver perfil' rendered="#{agendaRestManagedBean.usuarioSeleccionado}==null"/>
+                    </h:form></li>
+                <li><a href="#"></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right"> 
+                <li><a href="#"></a></li>
+                 <li id='botonSalir' >
+                    <h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.volver()}" value='Volver'/>
+                    </h:form>
+                </li>
+                 <li><a href="#"></a></li>
+                <li id='botonSalir' >
+                    <h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.salir()}" value='Salir'/>
+                    </h:form>
+                </li>
                 <li><a href="#"></a></li>
             </ul>
         </nav>
+        
         <f:view>
             <h:form id="listaEventosSinValidar">
                 <h1><h:outputText value="List"/></h1>
