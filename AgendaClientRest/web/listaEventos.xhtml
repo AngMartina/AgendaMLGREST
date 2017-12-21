@@ -60,7 +60,13 @@
                 <li><a href="#"></a></li>
                 <li>
                     <h:form>
-                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.crearEvento()}" value='Crear Evento'/>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.crearEvento()}" value='Crear Evento' rendered="#{agendaRestManagedBean.usuarioSeleccionado != null}"/>
+                    </h:form>
+                </li>
+                <li><a href="#"></a></li>
+                <li>
+                    <h:form>
+                        <h:commandLink style="color:#ffffff;font-size: 20px;margin-top: 5px;line-height: 45px;" action="#{agendaRestManagedBean.validarEventos()}" value='Validar' rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}"/>
                     </h:form>
                 </li>
 
@@ -124,7 +130,7 @@
                                     <h:outputText value="Fechainicio"/>
                                 </f:facet>
                                 <h:outputText value="#{item.fechainicio}">
-                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
                                 </h:outputText>
                             </h:column>
                             <h:column>
@@ -132,7 +138,7 @@
                                     <h:outputText value="Fechafin"/>
                                 </f:facet>
                                 <h:outputText value="#{item.fechafin}">
-                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
                                 </h:outputText>
                             </h:column>
                             <h:column>
@@ -168,8 +174,6 @@
                             </h:column>
 
                         </h:dataTable>
-
-                        <h:commandButton id="Validar" value="Validar" action="#{agendaRestManagedBean.verEventosSinValidar()}" rendered="#{agendaRestManagedBean.usuarioSeleccionado.tipoUsuario == 3}"/>
 
                     </h:form>
                 </f:view>
