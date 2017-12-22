@@ -89,8 +89,8 @@
                     
                 </h:panelGrid>
                 <h:outputText value="#{agendaRestManagedBean.mensajeError}"/>
-                <h:commandButton action="#{agendaRestManagedBean.subirEvento()}" value="Crear"/>
-                
+                <h:commandButton action="#{agendaRestManagedBean.subirEvento()}" value="Crear" rendered="#{!agendaRestManagedBean.modificar}"/>
+                <h:commandButton action="#{agendaRestManagedBean.subirEvento()}" value="Modificar" rendered="#{agendaRestManagedBean.modificar}"/>
             </h:form>
         </f:view>
 

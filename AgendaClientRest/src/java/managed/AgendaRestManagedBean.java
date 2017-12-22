@@ -12,9 +12,9 @@ import entity.Usuarios;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -251,6 +251,7 @@ public class AgendaRestManagedBean implements Serializable {
     
     public String crearEvento(){
         this.eventoSeleccionado = new Evento();
+        modificar = false;
         return "crearEvento";
     }
     
@@ -342,7 +343,7 @@ public class AgendaRestManagedBean implements Serializable {
     }
     
     public String validarEvento(Evento evento){
-        
+        int veer = evento.getEstado();
         evento.setEstado(1);
         
         ClienteUsuarios clienteUsuario = new ClienteUsuarios();
@@ -495,7 +496,7 @@ public class AgendaRestManagedBean implements Serializable {
         
     }
     
-      public void buscarPor(){
+      public void buscarPor() throws ParseException{
         if(0!=this.busqueda)
             switch (this.busqueda) {
            
@@ -567,18 +568,20 @@ public class AgendaRestManagedBean implements Serializable {
         return eventosPorPreferencias;
     }
     
-    public List<Evento> listarEventosFecha (Date fecha){
+  public List<Evento> listarEventosFecha (Date fecha) throws ParseException{
         List<Evento> listaResultante = new ArrayList<>();
         List<Evento> todosEventos = this.listaTodosEventos();
         
+        
         if(this.usuarioSeleccionado.getTipoUsuario() == 3){
             for(Evento evento: todosEventos){
-                if(evento.getFechainicio().before(fecha) && fecha.before(evento.getFechafin())){
+                if((evento.getFechainicio().before(fecha) && fecha.before(evento.getFechafin())) || (evento.getFechainicio().equals(fecha) || (evento.getFechafin().equals(fecha)))){
                     listaResultante.add(evento);
                 }
             }
         }else{
             for(Evento evento: todosEventos){
+             
                 if(evento.getFechainicio().before(fecha) && fecha.before(evento.getFechafin())){
                     if(evento.getEstado() != 0){
                         listaResultante.add(evento);
@@ -589,11 +592,8 @@ public class AgendaRestManagedBean implements Serializable {
         
         
         return listaResultante;
-        
-        
-        
+          
     }
-    
 
     
     
